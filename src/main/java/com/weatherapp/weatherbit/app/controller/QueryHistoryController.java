@@ -28,6 +28,10 @@ public class QueryHistoryController {
     @GetMapping("/history/get-cities-queried")
     public List<String> getCitiesQueriedByUser(@RequestParam("userId") Long userId) throws Exception {
 
+        if (userId == null) {
+            throw new IllegalArgumentException("User Id cannot be null");
+        }
+
         User user = userService.getUserById(userId);
 
         if (user == null) {
@@ -36,9 +40,6 @@ public class QueryHistoryController {
 
         logger.info("Getting Cities queried by the User with Id: " + userId);
         try {
-            if (userId == null) {
-                throw new IllegalArgumentException("User Id cannot be null");
-            }
             return cityHistoryService.getCitiesQueriedByUser(userId);
         } catch (Exception e) {
             logger.error(e.getMessage());

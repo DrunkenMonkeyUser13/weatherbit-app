@@ -30,15 +30,23 @@ public class WeatherServiceImpl implements WeatherService{
 
     @Override
     public WeatherResponse queryWeatherByCity(String cityName) {
-        String apiUrl = baseUrl + "/current?city=" + cityName + "&key=" + apiKey;
+        return getWeatherResponse(baseUrl + "/current?city=" + cityName + "&key=" + apiKey);
+    }
 
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(apiUrl, String.class);
+    @Override
+    public WeatherResponse queryWeatherByLatAndLon(Double latitude, Double longitude) throws JsonProcessingException {
+        return getWeatherResponse(baseUrl + "/current?lat=" + latitude + "&lon=" + longitude + "&key=" + apiKey);
+    }
+
+    private WeatherResponse getWeatherResponse(String baseUrl) {
+
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(baseUrl, String.class);
         String jsonResponse = responseEntity.getBody();
 
         try {
             return objectMapper.readValue(jsonResponse, WeatherResponse.class);
         } catch (JsonProcessingException e) {
-            throw new WeatherServiceException("Error Querying weather data: ", e);
+            throw new WeatherServiceException("Error Querying Weather Data: ");
         }
     }
 }

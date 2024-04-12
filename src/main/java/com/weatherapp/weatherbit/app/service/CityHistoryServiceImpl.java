@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CityHistoryServiceImpl implements CityHistoryService{
@@ -26,4 +27,21 @@ public class CityHistoryServiceImpl implements CityHistoryService{
 
     }
 
+    @Override
+    public void addLatLonHistoryByUser(User user, Double latitude, Double longitude) {
+        CityHistory cityHistory = new CityHistory();
+
+        cityHistory.setUser(user);
+        cityHistory.setLatitude(latitude);
+        cityHistory.setLongitude(longitude);
+        cityHistory.setTime(LocalDateTime.now());
+
+        cityHistoryRepository.save(cityHistory);
+    }
+
+    @Override
+    public List<String> getCitiesQueriedByUser(Long userId) {
+
+        return cityHistoryRepository.getCitiesQueriedByUserId(userId);
+    }
 }

@@ -28,6 +28,8 @@ public class CityHistory {
     private Long id;
     private String cityName;
     private LocalDateTime time;
+    private Double latitude;
+    private Double longitude;
 
     @ManyToOne(
             cascade = CascadeType.ALL

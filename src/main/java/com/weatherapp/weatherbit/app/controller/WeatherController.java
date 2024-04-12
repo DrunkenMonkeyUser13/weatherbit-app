@@ -37,11 +37,11 @@ public class WeatherController {
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/weather/query-weather-by-city")
-    public ResponseEntity<String> queryWeatherByCity(@RequestParam("userId") Long userId,@RequestParam("cityName") String cityName) throws Exception {
+    public ResponseEntity<String> queryWeatherByCity(@RequestParam("userId") Long userId, @RequestParam("cityName") String cityName) throws Exception {
 
         User user = userService.getUserById(userId);
 
-        logger.info("Getting Weather Data for the City: " + cityName + ". Made by user with Id: " + userId);
+        logger.info("Getting Weather Data for the City: " + cityName + ". Request made by User with Id: " + userId);
 
         WeatherResponse weatherResponse = weatherService.queryWeatherByCity(cityName);
 
@@ -49,8 +49,26 @@ public class WeatherController {
 
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(extractedValues);
-
         cityHistoryService.addCityHistoryByUser(user, cityName);
+
+        return ResponseEntity.ok(jsonResponse);
+    }
+
+    @GetMapping("/weather/query-weather-by-lat-lon")
+    public ResponseEntity<String> queryWeatherByLatAndLon(@RequestParam("userId") Long userId, @RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude) throws Exception{
+
+        User user = userService.getUserById(userId);
+
+        logger.info("Getting Weather Data for Latitude: " + latitude + " And Longitude: " + longitude + ". Request made by User with ID: " + userId);
+
+        WeatherResponse weatherResponse = weatherService.queryWeatherByLatAndLon(latitude, longitude);
+
+        Map<String, Object> extractedValues = getStringObjectMap(weatherResponse);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse = objectMapper.writeValueAsString(extractedValues);
+
+        cityHistoryService.addLatLonHistoryByUser(user, latitude, longitude);
 
         return ResponseEntity.ok(jsonResponse);
     }
